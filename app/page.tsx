@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         alt="hero"
       />
       <Navbar/>
+      <HeroSection/>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { inter } from "@/lib/fonts";
+import { outfit,spaceGrotesk } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -11,7 +11,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      className={`${outfit.variable} ${spaceGrotesk.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
