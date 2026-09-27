@@ -15,35 +15,74 @@ interface AuthDialogProps {
 }
 
 export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
-  const [haveAccount, sethaveAccount] = useState(true);
+  const [haveAccount, setHaveAccount] = useState(true);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-center">
-            Sign In to RetailX AI
+            {haveAccount
+              ? "Sign In to RetailX AI"
+              : "Create RetailX AI Account"}
           </DialogTitle>
           <DialogDescription className="text-center">
-            Enter your email and password
+            {haveAccount
+              ? "Enter your email and password to sign in"
+              : "Enter your details to create an account"}
           </DialogDescription>
-          <div className="mt-3">
-            <h2 className="mb-4">Enter your email</h2>
-            <Input placeholder="Enter Email" className="mb-5" />
-            {!haveAccount ? (
-              <div>
-                <h2 className="mb-4">Enter your username</h2>
-                <Input placeholder="Enter Username" className="mb-5" />
+
+          <div className="mt-3 text-left">
+            {!haveAccount && (
+              <div className="mb-4">
+                <h2 className="mb-2 text-sm font-medium">
+                  Enter your username
+                </h2>
+                <Input placeholder="Enter Username" />
               </div>
-            ) : null}
-            <h2 className="mb-3">Enter your password</h2>
-            <Input placeholder="Enter Password" className="mb-5" />
+            )}
+
+            <div className="mb-4">
+              <h2 className="mb-2 text-sm font-medium">Enter your email</h2>
+              <Input placeholder="Enter Email" type="email" />
+            </div>
+
+            <div className="mb-5">
+              <h2 className="mb-2 text-sm font-medium">Enter your password</h2>
+              <Input placeholder="Enter Password" type="password" />
+            </div>
           </div>
-          <div className="flex mb-4">
-            <h2 className="mr-2">Dont have an accout.</h2>
-            <h2 className="cursor-pointer" onClick={()=>sethaveAccount(false)}>Click here</h2>
+
+          {/* Conditional Toggle Footer */}
+          <div className="flex justify-center items-center gap-1 mb-4 text-sm">
+            {haveAccount ? (
+              <>
+                <span>Don't have an account?</span>
+                <button
+                  type="button"
+                  className="font-semibold text-primary underline cursor-pointer hover:opacity-80"
+                  onClick={() => setHaveAccount(false)}
+                >
+                  Create one
+                </button>
+              </>
+            ) : (
+              <>
+                <span>Already have an account?</span>
+                <button
+                  type="button"
+                  className="font-semibold text-primary underline cursor-pointer hover:opacity-80"
+                  onClick={() => setHaveAccount(true)}
+                >
+                  Log in
+                </button>
+              </>
+            )}
           </div>
-          <Button variant="default">{haveAccount ? "Sign In" : "Create Account"}</Button>
+
+          <Button variant="default" className="w-full">
+            {haveAccount ? "Sign In" : "Create Account"}
+          </Button>
         </DialogHeader>
       </DialogContent>
     </Dialog>
