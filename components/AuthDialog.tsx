@@ -9,7 +9,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { userLogin } from "@/actions/userlogin";
-import { toast } from "@/components/ui/toast";
+import { userRegister } from "@/actions/userregister";
 
 interface AuthDialogProps {
   open: boolean;
@@ -20,29 +20,18 @@ interface AuthDialogProps {
 export default function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   const [haveAccount, setHaveAccount] = useState(true);
 
-  const [username, setUsername] = useState("");
+  const [name, setname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-
-  const payload = haveAccount ? { email, password } : { username, email, password };
-
-  const res = await userLogin(payload);
-
-  if (!res.success && res.errors) {
-    const errorMessage =
-      res.errors.password?.[0] ??``
-      res.errors.email?.[0] ??
-      res.errors.username?.[0] ??
-      "An unexpected validation error occurred.";
-
-    toast.add({
-      title: "Validation Error",
-      description: errorMessage,
-    });
+  if(haveAccount){
+    await userLogin(email,password)
+  }else{
+    await userRegister(name,email,password)
   }
+  
 };
 
   return (
@@ -70,8 +59,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </h2>
                 <Input
                   placeholder="Enter Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
                 />
               </div>
             )}

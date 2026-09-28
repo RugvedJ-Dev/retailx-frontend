@@ -1,34 +1,28 @@
 "use server";
 
-import { z } from "zod";
+import User from "@/models/User";
+import { connectDB } from "@/lib/db";
+import { redirect } from "next/navigation";
 
-const userLoginSchema = z.object({
-  username: z.string().optional(),
-  email: z.email({ message: "Invalid email format" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-});
+export const userLogin = async (email: string, password: string) => {
+  let isSuccessful = false;
 
-export type UserLoginData = z.infer<typeof userLoginSchema>;
+  try {
+    await connectDB();
 
-export type ServerActionResponse = 
-  | { success: true; data: UserLoginData }
-  | { success: false; errors: Record<string, string[]> };
+    const user = await User.findOne({ email });
 
-export const userLogin = async (data: UserLoginData): Promise<ServerActionResponse> => {
-  const validation = userLoginSchema.safeParse(data);
+    if (!user || user.password !== password) {
+      return { error: "Invalid email or password" };
+    }
 
-  // 1. Validation Fail Return
-  if (!validation.success) {
-    return {
-      success: false,
-      errors: validation.error.flatten().fieldErrors,
-    };
+    isSuccessful = true;
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return { error: "An unexpected error occurred." };
   }
 
-  const validData = validation.data;
-
-  return {
-    success: true,
-    data: validData,
-  };
+  if (isSuccessful) {
+    redirect("/dashboard");
+  }
 };
