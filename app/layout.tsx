@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { outfit, spaceGrotesk } from "@/lib/fonts";
+import { Toaster } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "RetailX AI",
@@ -14,7 +15,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${outfit.variable} ${spaceGrotesk.className} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <main>{children}</main>
+        <Toaster />
+      </body>
     </html>
   );
 }
