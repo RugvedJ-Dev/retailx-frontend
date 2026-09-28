@@ -4,5 +4,5 @@ import { redirect } from "next/navigation";
 export default async function Dashboard() {
   const session = await getSession();
   if (session === null) redirect("/");
-  return <div>Hi from Dashboard page</div>;
+  return <div>Hi from Dashboard page from thread creation and slug</div>;
 }
