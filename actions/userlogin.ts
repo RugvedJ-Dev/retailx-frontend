@@ -3,6 +3,7 @@
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
 import { redirect } from "next/navigation";
+import { setSession } from "./sessions";
 
 export const userLogin = async (email: string, password: string) => {
   let isSuccessful = false;
@@ -17,6 +18,7 @@ export const userLogin = async (email: string, password: string) => {
     }
 
     isSuccessful = true;
+    await setSession({email,password})
   } catch (error) {
     console.error("Authentication error:", error);
     return { error: "An unexpected error occurred." };

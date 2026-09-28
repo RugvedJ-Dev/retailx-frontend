@@ -3,6 +3,7 @@
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
 import { redirect } from "next/navigation";
+import { setSession } from "./sessions";
 
 export const userRegister = async (
   name: string,
@@ -22,6 +23,7 @@ export const userRegister = async (
 
     if (newUser) {
       isSuccessful = true;
+      await setSession({name,email,password})
     }
   } catch (error) {
     console.error("Registration error:", error);
