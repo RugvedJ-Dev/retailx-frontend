@@ -1,10 +1,13 @@
 "use client";
 
 import { UserRound } from "lucide-react";
+import { deleteSession } from "@/actions/sessions";
+import { redirect } from "next/navigation";
 
 export default function UserMenu() {
   const handleLogout = async () => {
-    
+    await deleteSession();
+    redirect("/")
   };
 
   return (

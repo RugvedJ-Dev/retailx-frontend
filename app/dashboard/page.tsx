@@ -1,6 +1,5 @@
 import { getSession } from "@/actions/sessions";
 import { redirect } from "next/navigation";
-import { UserRound } from "lucide-react";
 import { getThreads } from "@/actions/getthreads";
 import AddThreadsBtn from "@/components/AddThreadsBtn";
 import UserMenu from "@/components/UserMenu";
