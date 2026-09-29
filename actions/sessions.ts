@@ -1,10 +1,12 @@
 "use server";
 import { cookies } from "next/headers";
+import {Schema} from "mongoose";
 
 interface userData{
   name?: string;
   email: string;
   password: string;
+  _id: Schema.Types.ObjectId;
 }
 
 export const setSession = async (user: userData) => {

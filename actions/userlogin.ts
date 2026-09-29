@@ -18,7 +18,7 @@ export const userLogin = async (email: string, password: string) => {
     }
 
     isSuccessful = true;
-    await setSession({email,password})
+    await setSession({email,password,name:user.name,_id:user._id as any})
   } catch (error) {
     console.error("Authentication error:", error);
     return { error: "An unexpected error occurred." };
