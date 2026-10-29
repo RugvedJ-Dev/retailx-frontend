@@ -1,30 +1,21 @@
 "use server"
 
-import Thread from "@/models/Threads"
-import { getSession } from "./sessions"
+import { BackendUnavailableError, backendFetch, errorMessage } from "@/lib/backend"
 
 export const createThread = async (threadName: string) => {
   try {
-    const session = await getSession()
-    if (!session?._id) {
-      return { success: false, error: "Unauthorized" }
-    }
-    const response = await Thread.create({
-      userId: session._id,
-      threadname: threadName, 
+    const res = await backendFetch("/api/threads", {
+      method: "POST",
+      body: JSON.stringify({ name: threadName }),
     })
-
-    if (!response) {
-      throw new Error("Error occurred while creating Thread")
-    }
-
-    return { success: true, threadId: response._id.toString() }
+    if (res.status === 401) return { success: false as const, error: "Unauthorized" }
+    if (!res.ok) return { success: false as const, error: await errorMessage(res) }
+    const thread = await res.json()
+    return { success: true as const, threadId: thread.id as string }
   } catch (error) {
-    console.error("Failed to create thread:", error)
-
     return {
-      success: false,
-      error: error instanceof Error ? error.message : "Internal Server Error",
+      success: false as const,
+      error: error instanceof BackendUnavailableError ? error.message : "Internal Server Error",
     }
   }
 }

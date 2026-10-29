@@ -1,36 +1,23 @@
-"use server";
+"use server"
 
-import User from "@/models/User";
-import { connectDB } from "@/lib/db";
-import { redirect } from "next/navigation";
-import { setSession } from "./sessions";
+import { redirect } from "next/navigation"
 
-export const userRegister = async (
-  name: string,
-  email: string,
-  password: string,
-) => {
-  let isSuccessful = false;
+import { BackendUnavailableError, backendFetch, errorMessage } from "@/lib/backend"
+import { writeToken } from "@/lib/session"
 
+export const userRegister = async (name: string, email: string, password: string) => {
   try {
-    await connectDB();
-
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-    });
-
-    if (newUser) {
-      isSuccessful = true;
-      await setSession({name,email,password})
-    }
+    const res = await backendFetch("/api/auth/register", {
+      method: "POST",
+      auth: false,
+      body: JSON.stringify({ name, email, password }),
+    })
+    if (!res.ok) return { error: await errorMessage(res, "Failed to create account.") }
+    await writeToken((await res.json()).access_token)
   } catch (error) {
-    console.error("Registration error:", error);
-    return { error: "Failed to create user account." };
+    if (error instanceof BackendUnavailableError) return { error: error.message }
+    console.error("Registration error:", error)
+    return { error: "Failed to create user account." }
   }
-
-  if (isSuccessful) {
-    redirect("/dashboard");
-  }
-};
+  redirect("/dashboard")
+}

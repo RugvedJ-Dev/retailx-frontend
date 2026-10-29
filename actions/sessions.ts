@@ -1,31 +1,20 @@
-"use server";
-import { cookies } from "next/headers";
-import {Schema} from "mongoose";
+"use server"
 
-interface userData{
-  name?: string;
-  email: string;
-  password: string;
-  _id: Schema.Types.ObjectId;
+import { redirect } from "next/navigation"
+
+import { backendFetch } from "@/lib/backend"
+import { clearToken } from "@/lib/session"
+import type { SessionUser } from "@/lib/types"
+
+/** Resolve the signed-in user from the backend (null when signed out / token expired). */
+export const getSession = async (): Promise<SessionUser | null> => {
+  const res = await backendFetch("/api/auth/me")
+  if (res.status === 401) return null
+  if (!res.ok) throw new Error("Could not verify your session")
+  return res.json()
 }
 
-export const setSession = async (user: userData) => {
-  (await cookies()).set("session", JSON.stringify(user), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-};
-
-export const getSession = async (): Promise<any | null> => {
-  const session = (await cookies()).get("session")?.value;
-  if (!session) return null;
-  const user = JSON.parse(session);
-  return user;
-};
-
 export const deleteSession = async () => {
-  const cookieStore = await cookies();
-  cookieStore.delete("session");
-};
+  await clearToken()
+  redirect("/")
+}
